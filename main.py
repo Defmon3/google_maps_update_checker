@@ -85,12 +85,12 @@ TEMPLATE_URL = "https://maps.googleapis.com/maps/api/staticmap?&zoom={zoom}&size
 JSON_TEMPLATE = [{
     "lat": "0",
     "long": "0",
-    "zoom": 17,
+    "zoom": 10,
     "name": "Location 1",
 }, {
     "lat": "0",
     "long": "0",
-    "zoom": 17,
+    "zoom": 10,
     "name": "Location 2"
 
 }]
@@ -163,7 +163,8 @@ def update_images(metadata: List[Dict]):
             status = "New" if not old_image.exists() else "Changed"
             save_image(old_image, new_image.read_bytes())
             entry["last_changed"] = datetime.now().isoformat()
-            updates.append({"Name": entry["name"], "Location": f"{lat}, {long}", "Status": status})
+            updates.append({"Name": entry["name"], "Location": f"{lat}, {long}", "Status": status,
+                            "old_image": old_image.absolute(), "new_image": new_image.absolute()})
         else:
             updates.append({"Name": entry["name"], "Location": f"{lat}, {long}", "Status": "Unchanged",
                             "old_image": old_image.absolute(), "new_image": new_image.absolute()})
@@ -245,7 +246,6 @@ def main():
             generate_html(updates)
         else:
             print("No updates to report.")
-
 
 
 if __name__ == "__main__":
